@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверка новых уровней — Мой Пазл</title>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<main class="page">
+  <a class="back" href="./">← Мой Пазл</a>
+  <section class="card">
+    <h1>Проверка новых уровней</h1>
+    <p class="meta">Открывай после каждой правки <code>levels/levels.json</code>. Изменения на GitHub Pages появляются через 1–5 минут,
+      а игроки увидят новые уровни при следующем запуске игры с интернетом.</p>
+    <div id="out">Загружаю…</div>
+  </section>
+</main>
+<script>
+// Те же правила, что в игре (js/levelpacks.js): кривые записи игра просто пропускает
+const out = document.getElementById('out');
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const load = async (path) => {
+  const res = await fetch(path + '?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error(path + ' не найден (HTTP ' + res.status + ')');
+  const text = await res.text();
+  try { return JSON.parse(text); } catch (e) { throw new Error('ошибка в записи ' + path + ': ' + e.message + '. Чаще всего это лишняя или пропущенная запятая либо кавычка.'); }
+};
+
+(async () => {
+  let raw, builtin;
+  try {
+    builtin = await load('levels/builtin.json');
+    raw = await load('levels/levels.json');
+  } catch (e) {
+    out.innerHTML = `<div class="warn">❌ ${esc(e.message)}<br>Игроки пока видят прошлый набор уровней — исправь файл.</div>`;
+    return;
+  }
+  if (!Array.isArray(raw.chapters)) { out.innerHTML = '<div class="warn">❌ В файле нет списка "chapters": [ … ]</div>'; return; }
+
+  const warns = [];
+  const countries = Object.assign({}, builtin.countries);
+  for (const [id, c] of Object.entries(raw.countries || {})) {
+    if (!/^[a-z0-9_-]+$/.test(id)) { warns.push(`Страна "${esc(id)}": код страны — только маленькие латинские буквы, цифры, - и _`); continue; }
+    if (!c || !c.name) { warns.push(`Страна "${esc(id)}": нет названия "name"`); continue; }
+    if (builtin.countries[id]) warns.push(`Страна "${esc(id)}" уже есть в игре — её не нужно описывать в "countries"`);
+    countries[id] = c;
+  }
+
+  const seen = new Set(builtin.places), used = {};
+  let total = 0, html = '';
+  raw.chapters.forEach((ch, ci) => {
+    const where = `Глава №${ci + 1}`;
+    if (!ch || !countries[ch.country]) { warns.push(`${where}: страна "${esc(ch && ch.country)}" не найдена — добавь её в "countries"`); return; }
+    const c = countries[ch.country];
+    let cards = '';
+    (ch.places || []).forEach((p, pi) => {
+      const pw = `${where}, место №${pi + 1}`;
+      if (!p || typeof p.image !== 'string') { warns.push(`${pw}: нет "image" — игра его пропустит`); return; }
+      if (!p.name || !p.city) { warns.push(`${pw}: нужны "name" и "city" — игра его пропустит`); return; }
+      const stem = p.image.split('/').pop().replace(/\.[^.]+$/, '');
+      const id = `${ch.country}-${stem}`;
+      if (seen.has(id)) { warns.push(`${pw}: место ${esc(id)} уже есть (в игре или выше в файле) — переименуй файл, например в ${ch.country}/${String(builtin.nextFile[ch.country] || 1).padStart(2, '0')}.jpg`); return; }
+      seen.add(id);
+      used[ch.country] = Math.max(used[ch.country] || 0, parseInt(stem, 10) || 0);
+      if (!p.about) warns.push(`${pw} «${esc(p.name)}»: нет описания "about" — после победы под картиной будет пусто`);
+      total++;
+      cards += `<div class="m"><img src="levels/${esc(p.image)}" alt="">
+        <div><b>${esc(p.emoji || '📍')} ${esc(p.name)}</b><small>${esc(p.city)} · файл <code>levels/${esc(p.image)}</code></small><br>
+        <small>${esc(p.about || '')}</small></div></div>`;
+    });
+    html += `<h2>${esc(c.flag || '🏳️')} ${esc(c.name)}</h2>${cards || '<div class="warn">В главе нет ни одного годного места</div>'}`;
+  });
+
+  let head = '';
+  if (!raw.chapters.length) head += `<div class="ok">Пакет пока пустой — в игре ${builtin.levels} встроенных уровней. Образец заполнения — в <code>levels/example.json</code>.</div>`;
+  else head += `<div class="ok">✅ Новых глав: ${raw.chapters.length}, мест: ${total}. Они встанут в игре после уровня ${builtin.levels} (плюс повторы между главами).</div>`;
+  head += warns.map((w) => `<div class="warn">⚠️ ${w}</div>`).join('');
+  if (raw.chapters.length && !warns.length) head += '<div class="ok">👍 Ошибок нет</div>';
+  const nextList = Object.keys(countries).filter((id) => builtin.nextFile[id] || used[id])
+    .map((id) => `${esc(countries[id].flag || '')} ${esc(id)}/${String(Math.max(builtin.nextFile[id] || 1, (used[id] || 0) + 1)).padStart(2, '0')}.jpg`);
+  head += `<p class="meta">Следующие свободные имена файлов: ${nextList.join(' · ')}. Для новой страны начинай с <code>01.jpg</code>.</p>`;
+  out.innerHTML = head + html;
+  out.querySelectorAll('.m img').forEach((img) => {
+    img.onerror = () => img.closest('.m').insertAdjacentHTML('beforeend', '<span class="tag err">фото не найдено</span>');
+  });
+})();
+</script>
+</body>
+</html>

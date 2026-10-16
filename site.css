@@ -1,0 +1,45 @@
+/* Общие стили страниц на GitHub Pages: в цветах игры */
+:root {
+  --ink: #26334d; --ink-2: #61708c; --blue: #38a3ff; --blue-d: #1d7fd8;
+  --green: #33c766; --orange: #ff9f1c; --pink: #ff5c8d; --soft: #f1f6fc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #74c4ff 0%, #a9dcff 45%, #dff3ff 100%) fixed;
+}
+.page { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+.card { background: #fff; border-radius: 26px; padding: 22px; box-shadow: 0 6px 0 rgba(37, 80, 140, .09), 0 14px 28px rgba(37, 80, 140, .09); }
+.back { display: inline-block; margin-bottom: 14px; color: #fff; font-weight: 800; text-decoration: none; text-shadow: 0 2px 0 rgba(29, 127, 216, .45); }
+h1 { margin: 0 0 4px; font-size: 28px; line-height: 1.2; }
+h2 { margin: 26px 0 8px; font-size: 19px; }
+.meta { margin: 0 0 18px; color: var(--ink-2); font-size: 14px; }
+.doc ul { padding-left: 20px; }
+.doc li { margin-bottom: 8px; }
+a { color: var(--blue-d); }
+.fill { background: #fff3c4; padding: 0 6px; border-radius: 6px; font-weight: 700; }
+
+/* главная */
+.hero { text-align: center; }
+.hero img { width: 112px; height: 112px; border-radius: 28px; box-shadow: 0 8px 20px rgba(0, 0, 0, .15); }
+.hero h1 { font-size: 34px; margin-top: 14px; }
+.hero p { color: var(--ink-2); margin: 6px 0 20px; }
+.btn {
+  display: inline-block; padding: 14px 22px; border-radius: 18px; color: #fff; font-weight: 800; text-decoration: none;
+  background: linear-gradient(#55e086, var(--green)); box-shadow: 0 5px 0 #1f9f50;
+}
+.links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 18px; font-weight: 700; }
+
+.req a { color: #fff; }
+.req { margin-top: 16px; text-align: center; font-size: 13px; color: #fff; text-shadow: 0 1px 2px rgba(29, 127, 216, .6); }
+
+/* проверка миссий */
+.m { display: flex; gap: 12px; align-items: center; padding: 10px; border-radius: 18px; background: var(--soft); margin-top: 10px; }
+.m img { width: 96px; height: 72px; object-fit: cover; border-radius: 12px; flex: none; background: #dde6f2; }
+.m b { display: block; }
+.m small { color: var(--ink-2); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 800; color: #fff; background: var(--ink-2); }
+.tag.now { background: var(--green); } .tag.soon { background: var(--blue); } .tag.err { background: var(--pink); }
+.warn { margin-top: 12px; padding: 10px 12px; border-radius: 14px; background: #ffe9ef; color: #a3224d; font-weight: 700; }
+.ok { margin-top: 12px; padding: 10px 12px; border-radius: 14px; background: #e6f9ee; color: #1f7a45; font-weight: 700; }

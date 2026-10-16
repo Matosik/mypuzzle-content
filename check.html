@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверка миссий — Мой Пазл</title>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<main class="page">
+  <a class="back" href="./">← Мой Пазл</a>
+  <section class="card">
+    <h1>Проверка миссий</h1>
+    <p class="meta">Открывай эту страницу после каждой правки <code>missions.json</code>. Изменения на GitHub Pages появляются через 1–5 минут.</p>
+    <div id="out">Загружаю…</div>
+  </section>
+</main>
+<script>
+// Те же правила, что в игре (js/missions.js): кривые записи игра просто пропускает
+const out = document.getElementById('out');
+const fmt = (t) => new Date(t).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+const days = (ms) => Math.round(ms / 86400000);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+(async () => {
+  let raw;
+  try {
+    const res = await fetch('missions.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('файл не найден (HTTP ' + res.status + ')');
+    const text = await res.text();
+    try { raw = JSON.parse(text); } catch (e) { throw new Error('ошибка в записи JSON: ' + e.message + '. Чаще всего это лишняя или пропущенная запятая либо кавычка.'); }
+  } catch (e) {
+    out.innerHTML = `<div class="warn">❌ ${esc(e.message)}<br>Игроки пока видят прошлое расписание — исправь файл.</div>`;
+    return;
+  }
+
+  const warns = [], now = Date.now(), ids = new Set(), list = [];
+  if (!Array.isArray(raw.missions)) { out.innerHTML = '<div class="warn">❌ В файле нет списка "missions": [ … ]</div>'; return; }
+  raw.missions.forEach((m, i) => {
+    const where = `Миссия №${i + 1}${m && m.id ? ` (${esc(m.id)})` : ''}`;
+    if (!m || typeof m.id !== 'string') { warns.push(`${where}: нет "id" — игра её пропустит`); return; }
+    if (ids.has(m.id)) warns.push(`${where}: такой "id" уже есть — сделай его уникальным`);
+    ids.add(m.id);
+    const start = Date.parse(m.start), end = Date.parse(m.end);
+    if (!(start < end)) { warns.push(`${where}: проверь даты "start" и "end" — игра её пропустит`); return; }
+    if (typeof m.image !== 'string') { warns.push(`${where}: нет "image" — игра её пропустит`); return; }
+    const pieces = Math.round(+m.pieces);
+    if (!(pieces >= 4 && pieces <= 300)) warns.push(`${where}: "pieces" должно быть от 4 до 300`);
+    if (!m.title) warns.push(`${where}: нет названия "title"`);
+    list.push({ ...m, start, end, src: new URL(m.image, location.href).href });
+  });
+  list.sort((a, b) => a.start - b.start);
+  for (let i = 1; i < list.length; i++) {
+    const gap = list[i].start - list[i - 1].end;
+    if (gap > 60000) warns.push(`Между «${esc(list[i - 1].title)}» и «${esc(list[i].title)}» перерыв ${days(gap) || 'меньше 1'} дн. — в это время миссии не будет`);
+    if (gap < -60000) warns.push(`«${esc(list[i - 1].title)}» и «${esc(list[i].title)}» пересекаются по датам — покажется только первая`);
+  }
+  const last = list[list.length - 1];
+  const current = list.find((m) => m.start <= now && now < m.end);
+  let head = '';
+  if (current) head += `<div class="ok">✅ Сейчас идёт: «${esc(current.title)}» до ${fmt(current.end)}</div>`;
+  else head += '<div class="warn">⚠️ Сейчас нет активной миссии — карточка в игре скрыта</div>';
+  if (last && last.end - now < 7 * 86400000) head += `<div class="warn">⏰ Расписание заканчивается ${fmt(last.end)} — добавь миссии на следующие недели</div>`;
+  else if (last) head += `<div class="ok">📅 Миссии расписаны до ${fmt(last.end)}</div>`;
+  head += warns.map((w) => `<div class="warn">⚠️ ${w}</div>`).join('');
+  if (!warns.length) head += '<div class="ok">👍 Ошибок в файле нет</div>';
+
+  out.innerHTML = head + list.map((m) => {
+    const st = now >= m.end ? ['', 'закончилась'] : now >= m.start ? ['now', 'идёт сейчас'] : ['soon', 'скоро'];
+    return `<div class="m" data-src="${esc(m.src)}">
+      <img src="${esc(m.src)}" alt="">
+      <div><span class="tag ${st[0]}">${st[1]}</span> <b>${esc(m.title || '')}</b>
+        <small>${fmt(m.start)} — ${fmt(m.end)} · ${Math.round(+m.pieces) || 48} деталей · +${Math.round(+m.rewardXp) || 0} XP</small><br>
+        <small>${esc(m.description || '')}</small></div></div>`;
+  }).join('');
+  out.querySelectorAll('.m img').forEach((img) => {
+    img.onerror = () => {
+      img.closest('.m').insertAdjacentHTML('beforeend', '<span class="tag err">картинка не найдена</span>');
+    };
+  });
+})();
+</script>
+</body>
+</html>

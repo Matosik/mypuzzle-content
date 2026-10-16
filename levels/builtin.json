@@ -1,0 +1,235 @@
+{
+  "note": "Создаётся автоматически скриптом scripts/gen-level-docs.mjs — не редактируй вручную",
+  "countries": {
+    "russia": {
+      "name": "Россия",
+      "flag": "🇷🇺"
+    },
+    "france": {
+      "name": "Франция",
+      "flag": "🇫🇷"
+    },
+    "italy": {
+      "name": "Италия",
+      "flag": "🇮🇹"
+    },
+    "japan": {
+      "name": "Япония",
+      "flag": "🇯🇵"
+    },
+    "egypt": {
+      "name": "Египет",
+      "flag": "🇪🇬"
+    },
+    "china": {
+      "name": "Китай",
+      "flag": "🇨🇳"
+    },
+    "uk": {
+      "name": "Великобритания",
+      "flag": "🇬🇧"
+    },
+    "spain": {
+      "name": "Испания",
+      "flag": "🇪🇸"
+    },
+    "usa": {
+      "name": "США",
+      "flag": "🇺🇸"
+    },
+    "india": {
+      "name": "Индия",
+      "flag": "🇮🇳"
+    },
+    "brazil": {
+      "name": "Бразилия",
+      "flag": "🇧🇷"
+    },
+    "turkey": {
+      "name": "Турция",
+      "flag": "🇹🇷"
+    },
+    "germany": {
+      "name": "Германия",
+      "flag": "🇩🇪"
+    },
+    "greece": {
+      "name": "Греция",
+      "flag": "🇬🇷"
+    },
+    "thailand": {
+      "name": "Таиланд",
+      "flag": "🇹🇭"
+    },
+    "mexico": {
+      "name": "Мексика",
+      "flag": "🇲🇽"
+    },
+    "australia": {
+      "name": "Австралия",
+      "flag": "🇦🇺"
+    },
+    "norway": {
+      "name": "Норвегия",
+      "flag": "🇳🇴"
+    },
+    "peru": {
+      "name": "Перу",
+      "flag": "🇵🇪"
+    },
+    "uae": {
+      "name": "ОАЭ",
+      "flag": "🇦🇪"
+    },
+    "canada": {
+      "name": "Канада",
+      "flag": "🇨🇦"
+    }
+  },
+  "places": [
+    "russia-01",
+    "russia-02",
+    "russia-03",
+    "russia-04",
+    "russia-05",
+    "france-01",
+    "france-02",
+    "france-03",
+    "france-04",
+    "france-05",
+    "italy-01",
+    "italy-02",
+    "italy-03",
+    "italy-04",
+    "italy-05",
+    "japan-01",
+    "japan-02",
+    "japan-03",
+    "japan-04",
+    "japan-05",
+    "egypt-01",
+    "egypt-02",
+    "egypt-03",
+    "egypt-04",
+    "egypt-05",
+    "china-01",
+    "china-02",
+    "china-03",
+    "china-04",
+    "china-05",
+    "uk-01",
+    "uk-02",
+    "uk-03",
+    "uk-04",
+    "uk-05",
+    "spain-01",
+    "spain-02",
+    "spain-03",
+    "spain-04",
+    "spain-05",
+    "usa-01",
+    "usa-02",
+    "usa-03",
+    "usa-04",
+    "usa-05",
+    "india-01",
+    "india-02",
+    "india-03",
+    "india-04",
+    "india-05",
+    "brazil-01",
+    "brazil-02",
+    "brazil-03",
+    "brazil-04",
+    "brazil-05",
+    "turkey-01",
+    "turkey-02",
+    "turkey-03",
+    "turkey-04",
+    "turkey-05",
+    "germany-01",
+    "germany-02",
+    "germany-03",
+    "germany-04",
+    "germany-05",
+    "greece-01",
+    "greece-02",
+    "greece-03",
+    "greece-04",
+    "greece-05",
+    "russia-06",
+    "russia-07",
+    "russia-08",
+    "russia-09",
+    "russia-10",
+    "thailand-01",
+    "thailand-02",
+    "thailand-03",
+    "thailand-04",
+    "thailand-05",
+    "mexico-01",
+    "mexico-02",
+    "mexico-03",
+    "mexico-04",
+    "mexico-05",
+    "australia-01",
+    "australia-02",
+    "australia-03",
+    "australia-04",
+    "australia-05",
+    "italy-06",
+    "italy-07",
+    "italy-08",
+    "italy-09",
+    "italy-10",
+    "norway-01",
+    "norway-02",
+    "norway-03",
+    "norway-04",
+    "norway-05",
+    "peru-01",
+    "peru-02",
+    "peru-03",
+    "peru-04",
+    "peru-05",
+    "japan-06",
+    "japan-07",
+    "japan-08",
+    "japan-09",
+    "japan-10",
+    "uae-01",
+    "uae-02",
+    "uae-03",
+    "uae-04",
+    "uae-05",
+    "canada-01",
+    "canada-02",
+    "canada-03",
+    "canada-04",
+    "canada-05"
+  ],
+  "nextFile": {
+    "russia": 11,
+    "france": 6,
+    "italy": 11,
+    "japan": 11,
+    "egypt": 6,
+    "china": 6,
+    "uk": 6,
+    "spain": 6,
+    "usa": 6,
+    "india": 6,
+    "brazil": 6,
+    "turkey": 6,
+    "germany": 6,
+    "greece": 6,
+    "thailand": 6,
+    "mexico": 6,
+    "australia": 6,
+    "norway": 6,
+    "peru": 6,
+    "uae": 6,
+    "canada": 6
+  },
+  "levels": 164
+}
